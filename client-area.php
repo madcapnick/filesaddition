@@ -18,7 +18,29 @@
 	4) Create and copy/paste or insert this PHP file into your theme folder /YOURTHEME/Sliced/client-area.php
 	
 -->
-
+<head>
+<style>
+.sliced.client .sliced-invoice-items h3 {
+    background: #7A121C;
+    border: none;
+    color: #fff;
+}
+.sliced.client .sliced-quote-items h3 {
+    background: #003E4C;
+    border: none;
+    color: #fff;
+}
+.sliced.client .sliced-file-items h3 {
+    background: #F88D2A;
+    border: none;
+    color: #fff;
+}
+.sliced.client .sliced-items h3 {
+	width: 25%;
+}
+</style>
+</head>
+<body>
 <?php 
 // If this file is called directly, abort.
 if ( ! defined( 'WPINC' ) ) {
@@ -96,7 +118,7 @@ $quo_label = sliced_get_quote_label();
             
             <div class="col-sm-12">
 
-            <h3><i class="fa fa-pie-chart"></i> <?php printf( esc_html__( '%s', 'sliced-invoices-client-area' ), $quo_label_plural ); ?></h3>
+            <h3><i class="fa fa-line-chart" aria-hidden="true"></i> <?php printf( esc_html__( '%s', 'sliced-invoices-client-area' ), $quo_label_plural ); ?></h3>
 
                 <div class="quote-statuses statuses">
                     <span class="sent"><?php echo sliced_get_client_label( 'sent', __( 'Sent', 'sliced-invoices' ) ); ?> <?php echo esc_html( sliced_get_quote_totals( 'sent' ) ); ?></span>
@@ -124,7 +146,7 @@ $quo_label = sliced_get_quote_label();
                             <th class="actions"></th>
                         </tr>
                     </thead>
-                    <tfoot>
+                    <!-- <tfoot>
                         <tr>
                             <th class="id hidden">ID</th>
                             <th class="date"><strong><?php echo sliced_get_client_label( 'client-date-label', __( 'Date', 'sliced-invoices' ) ); ?></strong></th>
@@ -134,7 +156,7 @@ $quo_label = sliced_get_quote_label();
                             <th class="totals"><strong><?php echo sliced_get_client_label( 'total', __( 'Total', 'sliced-invoices' ) ); ?></strong></th>
                             <th class="actions" data-orderable="false"></th>
                         </tr>
-                    </tfoot>
+                    </tfoot> -->
 
                     <tbody>
 
@@ -161,6 +183,7 @@ $quo_label = sliced_get_quote_label();
 
                 </table>
                 </div>
+			<!-- SEARCH HIDDEN ////////// 
                 <script type="text/javascript" charset="utf-8">
                     jQuery(document).ready(function() {
 
@@ -186,6 +209,7 @@ $quo_label = sliced_get_quote_label();
                         });
                     } );
                 </script>
+				-->
 
             <?php else : ?>
                 <p class="none"><?php echo sliced_get_client_label( 'client-currentlynoquotes-label', 'Currently no Quotes' ); ?></p> 
@@ -206,7 +230,7 @@ $quo_label = sliced_get_quote_label();
             
             <div class="col-sm-12">
 
-            <h3><i class="fa fa-pie-chart"></i> <?php printf( esc_html__( '%s', 'sliced-invoices-client-area' ), $inv_label_plural ); ?></h3>
+            <h3><i class="fa fa-credit-card-alt"></i> <?php printf( esc_html__( '%s', 'sliced-invoices-client-area' ), $inv_label_plural ); ?></h3>
 
                 <div class="invoice-statuses statuses">
                     <span class="paid"><?php echo sliced_get_client_label( 'paid', __( 'Paid', 'sliced-invoices' ) ); ?> <?php echo esc_html( sliced_get_invoice_totals( 'paid' ) ); ?></span>
@@ -232,7 +256,7 @@ $quo_label = sliced_get_quote_label();
                             <th class="actions" data-orderable="false"></th>
                         </tr>
                     </thead>
-                    <tfoot>
+                  <!--  <tfoot>
                         <tr>
                             <th class="id hidden">ID</th>
                             <th class="date"><strong><?php echo sliced_get_client_label( 'client-date-label', __( 'Date', 'sliced-invoices' ) ); ?></strong></th>
@@ -243,7 +267,7 @@ $quo_label = sliced_get_quote_label();
                             <th class="totals"><strong><?php echo sliced_get_client_label( 'total', __( 'Total', 'sliced-invoices' ) ); ?></strong></th>
                             <th class="actions"></th>
                         </tr>
-                    </tfoot>
+                    </tfoot> -->
 
                     <tbody>
 
@@ -309,98 +333,13 @@ $quo_label = sliced_get_quote_label();
 			
 			<hr/>
 <!-- FILES ////////////// -->
-        <div class="row sliced-quote-items sliced-items">
+        <div class="row sliced-file-items sliced-items">
             
             <div class="col-sm-12">
 
-            <h3><i class="fa fa-sticky-note"></i> Files</h3>           
-<!-- FILES TABLE ////////////// -->  
-<div class="upf_filelist">
-	<?php
-	$args = array(
-		'post_type' => 'userfile',
-		'meta_key' => 'upf_user', 
-		'meta_value' => $current_user->user_login,
-		'orderby' => 'date',
-		'order' => DESC
-	);
-
-	if (!empty($_POST['upf_year'])) $args['year'] = $_POST['upf_year'];
-	if (!empty($_POST['upf_cat'])) $args['file_categories'] = $_POST['upf_cat'];
-	
-	$the_query = new WP_Query( $args );
-
-
-	$html = '';
-
-	$current_year = '';
-
-	// The Loop
-	if ($the_query->have_posts()) : 
-		while ( $the_query->have_posts() ) : $the_query->the_post(); 
-			$year = get_the_date('Y');
-			if ($year != $current_year) {
-				// echo '<h2>'.$year.'</h2>';
-				$current_year = $year;
-			}
-			?>
-	<!--		<div class="report-wrap clearfix">
-				<span class="report-name"><a href="<?php the_permalink();?>"><?php the_title();?></a></span>
-				<div class="right">
-					<a href="?upf=vw&id=<?php echo get_the_ID();?>" class="view-print" target="_blank"><?php _e('View and Print', 'user-private-files');?></a> |
-					<a href="?upf=dl&id=<?php echo get_the_ID();?>" class="download" target="_blank"><?php _e('Download', 'user-private-files');?></a>
-				</div>
-			</div>
-	-->
-			<?php
-		endwhile; 
-	endif;
-	?>
-	</div> 
-<div class="table-responsive">
-    <table id="table-invoices" class="table table-sm table-bordered table-striped display" cellspacing="0" width="100%">
-        <thead>
-            <tr>
-                <th class="id hidden">ID</th>
-                <th class="date"><strong>Uploaded Date</strong></th>
-                <th class="title"><strong>File Name</strong></th>
-                <th class="actions" data-orderable="false"></th>
-            </tr>
-        </thead>
-        <tfoot>
-            <tr>
-                <th class="id hidden">ID</th>
-                <th class="date"><strong>Uploaded Date</strong></th>
-                <th class="title"><strong>File Name</strong></th>
-                <th class="actions" data-orderable="false"></th>
-            </tr>
-        </tfoot>
-        <tbody>
-            <?php
-				$count = 0;
-                foreach ( $invoices as $invoice ) {
-                $class = ($count % 2 == 0) ? 'even' : 'odd'; ?>
-                    <tr class="row_<?php echo $class; ?> sliced-item">
-                        <td class="id hidden"><?php echo esc_html( $invoice ); ?></td>
-                        <td class="date" data-order="<?php echo esc_attr( sliced_get_created( $invoice ) ); ?>"><?php echo sliced_get_created( $invoice ) ? esc_html( date_i18n( get_option( 'date_format' ), sliced_get_created( $invoice ) ) ) :  __( 'N/A', 'sliced-invoices-client-area' ); ?></td>
-                        <td class="title"><span class="report-name"><a href="<?php the_permalink();?>"><?php the_title();?></a></span></td> 
-                        <td class="actions text-right">
-                            <a href="?upf=vw&id=<?php echo get_the_ID();?>" class="view-print" target="_blank"><?php _e('View and Print', 'user-private-files');?></a>
-                        </td>
-                        </tr>
-
-                    <?php $count++; } ?>
-
-                    </tbody>
-
-                </table>
-            </div>
-
+            <h3><i class="fa fa-folder" aria-hidden="true"></i> Files</h3> <?php echo do_shortcode("[userfiles]"); ?>
         </div>
-
-        <hr>
-        </div>
-		
-		<?php endif; ?>
-
+		</div>
+			<?php endif; ?>
     </div>
+	</body>
